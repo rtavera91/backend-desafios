@@ -18,7 +18,7 @@ export const findUsers = async (req, res) => {
 
 export const findUserById = async (req, res) => {
   const { uid } = req.params;
-  const user = await findById(+uid); // Pasa el ID del usuario
+  const user = await findById(uid); // Pasa el ID del usuario
   if (user) {
     res.status(200).json({ message: "User found", user });
   } else {

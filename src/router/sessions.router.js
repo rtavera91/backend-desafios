@@ -1,7 +1,10 @@
 import { Router } from "express";
 import passport from "passport";
 import { usersManager } from "../dao/managers/usersManager.js";
+import { findUserById } from "../controllers/users.controller.js";
 import { generateToken, compareData, hashData } from "../utils.js";
+import { isUser } from "../middlewares/auth.middleware.js";
+import UserDTO from "../dao/DTOs/userDTO.js";
 import { jwtValidation } from "../middlewares/jwt.middleware.js";
 const router = Router();
 
@@ -57,9 +60,22 @@ router.post("/signup", async (req, res, next) => {
 router.get(
   "/current",
   passport.authenticate("jwt", { session: false }),
-  (req, res) => {
-    const currentUser = req.user;
-    res.status(200).json({ message: "Authorized", user: req.user });
+  isUser,
+  async (req, res) => {
+    try {
+      const currentUserId = req.user.id;
+      const user = await usersManager.findById(currentUserId);
+      if (!user) {
+        return res.status(404).json({ message: "User not found" });
+      }
+      const userDTO = new UserDTO(user);
+      res.status(200).json({ message: "Authorized", user: userDTO });
+    } catch (error) {
+      console.error(error.message);
+      res.status(500).json({ message: "Internal Server Error" });
+    }
+    // const currentUser = req.user;
+    // res.status(200).json({ message: "Authorized", user: req.user });
   }
 );
 

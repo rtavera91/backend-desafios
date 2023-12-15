@@ -10,7 +10,7 @@ export const authMiddleware = (roles) => {
 // permisos por rol
 
 export const isAdmin = (req, res, next) => {
-  if (req.user & (req.user.role === "admin")) {
+  if (req.user && req.user.role === "admin") {
     next();
   } else {
     return res.status(403).json({ message: "Not authorized" });
@@ -18,7 +18,8 @@ export const isAdmin = (req, res, next) => {
 };
 
 export const isUser = (req, res, next) => {
-  if (req.user & (req.user.role === "user")) {
+  if (req.user && req.user.role === "user") {
+    console.log("req.user", req.user); // test
     next();
   } else {
     return res.status(403).json({ message: "Not authorized" });
