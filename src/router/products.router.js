@@ -1,4 +1,5 @@
 import { Router } from "express";
+import { isAdmin } from "../middlewares/auth.middleware.js";
 //import { productsManager } from "../dao/managers/productManager.js";
 import {
   findProducts,
@@ -15,9 +16,9 @@ router.get("/", (req, res) => {
 
 router.get("/products", findProducts);
 router.get("/products/:pid", findProductById);
-router.post("/products", createProduct);
-router.put("/products/:pid", updateProduct);
-router.delete("/products/:pid", deleteProduct);
+router.post("/products", isAdmin, createProduct);
+router.put("/products/:pid", isAdmin, updateProduct);
+router.delete("/products/:pid", isAdmin, deleteProduct);
 
 // // get de todos los productos con opción para poner un límite
 // router.get("/products/", async (req, res) => {

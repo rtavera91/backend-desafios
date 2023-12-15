@@ -1,4 +1,5 @@
 import { Router } from "express";
+import { isUser } from "../middlewares/auth.middleware.js";
 //import { cartsManager } from "../dao/managers/cartManager.js";
 import {
   findCarts,
@@ -14,11 +15,11 @@ const router = Router();
 // IMPLEMENTACIÓN DE ARQUITECTURA POR CAPAS
 router.get("/", findCarts);
 router.get("/:cid", findCartById);
-router.post("/", createCart);
-router.put("/:cid/product/:pid", updateCart);
-router.delete("/:cid", deleteCart);
-router.delete("/:cid/product/:pid", deleteCartProduct);
-router.delete("/:cid/products", deleteCartProducts);
+router.post("/", isUser, createCart);
+router.put("/:cid/product/:pid", isUser, updateCart);
+router.delete("/:cid", isUser, deleteCart);
+router.delete("/:cid/product/:pid", isUser, deleteCartProduct);
+router.delete("/:cid/products", isUser, deleteCartProducts);
 
 //---------DE AQUI PARA ABAJO ES LO QUE TENÍAMOS HASTA LA CLASE PASADA DONDE EL MANAGER SE COMUNICABA CON EL DAO------------//
 
