@@ -1,5 +1,6 @@
 import { Router } from "express";
 import { isAdmin } from "../middlewares/auth.middleware.js";
+import { generateProducts } from "../faker.js";
 //import { productsManager } from "../dao/managers/productManager.js";
 import {
   findProducts,
@@ -19,6 +20,12 @@ router.get("/products/:pid", findProductById);
 router.post("/products", isAdmin, createProduct);
 router.put("/products/:pid", isAdmin, updateProduct);
 router.delete("/products/:pid", isAdmin, deleteProduct);
+
+// FAKER IMPLEMENTATION
+router.get("/mockingproducts", (req, res) => {
+  const products = generateProducts();
+  res.status(200).json({ message: "Products created", products });
+});
 
 // // get de todos los productos con opción para poner un límite
 // router.get("/products/", async (req, res) => {

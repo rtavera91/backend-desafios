@@ -10,6 +10,14 @@ import {
   deleteCartProduct,
   deleteCartProducts,
 } from "../controllers/carts.controller.js";
+
+import {
+  findTickets,
+  findTicketById,
+  createTicket,
+  updateTicket,
+  deleteTicket,
+} from "../controllers/tickets.controller.js";
 const router = Router();
 
 // IMPLEMENTACIÓN DE ARQUITECTURA POR CAPAS
@@ -20,6 +28,9 @@ router.put("/:cid/product/:pid", isUser, updateCart);
 router.delete("/:cid", isUser, deleteCart);
 router.delete("/:cid/product/:pid", isUser, deleteCartProduct);
 router.delete("/:cid/products", isUser, deleteCartProducts);
+
+// Lógica de Tickets
+router.post("/:cid/purchase", createTicket);
 
 //---------DE AQUI PARA ABAJO ES LO QUE TENÍAMOS HASTA LA CLASE PASADA DONDE EL MANAGER SE COMUNICABA CON EL DAO------------//
 
