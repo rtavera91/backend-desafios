@@ -12,7 +12,7 @@ class TicketsManager {
     return ticket;
   }
 
-  async createOne(...cart) {
+  async createOne(cart) {
     const ticket = await ticketsModel.create({ cart });
     return ticket;
   }

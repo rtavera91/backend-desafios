@@ -25,13 +25,27 @@ export const findTicketById = async (req, res) => {
   }
 };
 
-export const createTicket = async (req, res) => {
-  const { cart } = req.body;
-  const createdTicket = await createOne(...cart);
-  if (createdTicket) {
-    res.status(200).json({ message: "Ticket created", ticket: createdTicket });
-  } else {
-    res.status(500).json({ message: "Internal Server Error" });
+export const createTicket = async (paramsOrId) => {
+  const { cart, purchase_datetime, quantity, purchaser, code } =
+    paramsOrId.params || paramsOrId;
+
+  try {
+    const createdTicket = await createOne(
+      cart,
+      purchase_datetime,
+      quantity,
+      purchaser,
+      code
+    );
+
+    if (createdTicket.error) {
+      return { error: createdTicket.error };
+    }
+
+    return { ticket: createdTicket };
+  } catch (error) {
+    console.error(error.message);
+    return { error: "Internal Server Error" };
   }
 };
 

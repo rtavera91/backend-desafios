@@ -11,23 +11,22 @@ const cartInTicketSchema = new Schema({
 
 const ticketSchema = new Schema(
   {
-    code: {
-      type: String,
-      required: true,
-      unique: true,
-    },
     purchase_datetime: {
       type: Date,
-      required: true,
+      // required: true,
     },
     cart: [cartInTicketSchema], // Referencia al modelo de carritos
-    amount: {
+    quantity: {
       type: Number,
-      required: true,
+      // required: true,
     },
     purchaser: {
       type: String,
-      required: true,
+      // required: true,
+    },
+    code: {
+      type: String,
+      // required: true,
     },
   },
   {

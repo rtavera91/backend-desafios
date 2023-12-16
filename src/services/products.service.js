@@ -2,54 +2,29 @@ import { productsManager } from "../dao/managers/productManager.js";
 
 export const findAll = async () => {
   try {
-    const { limit, sort, page, query } = req.query;
-    const limitValue = limit ? parseInt(limit) : 10;
-    let sortBy = null;
-    const endpoint = "http://localhost:8080/api/products/products";
-
-    if (sort) {
-      sortBy = sort === "asc" ? "price" : `-${sort === "desc" ? "price" : ""}`;
-    }
-
-    const products = await productsManager.findAll({
-      limit: limitValue,
-      sort: sortBy,
-      page,
-      query,
-      endpoint,
-    });
-    if (!products.results.length) {
-      res.status(200).json({ message: "No Products Found" });
-    } else {
-      res.status(200).json({
-        message: "Products found",
-        info: products.info,
-        products: products.results,
-      });
-    }
+    const products = await productsManager.findAll();
     return products;
   } catch (error) {
-    res.status(500).json({ error: error.message });
+    throw new Error("Internal Server Error");
   }
 };
 
 export const findById = async (id) => {
-  const { pid } = req.params;
   try {
-    const product = await productsManager.findById(pid);
+    const product = await productsManager.findById(id);
+    console.log("product:", product);
 
-    if (product.error === "Product Not Found") {
-      res.status(404).json({ message: "Product not found" });
-    } else {
-      res.status(200).json({ message: "Product found", product });
+    if (!product) {
+      return { error: "Product Not Found" };
     }
+
     return product;
   } catch (error) {
-    res.status(500).json({ message: "Internal Server Error" });
+    throw new Error("Internal Server Error");
   }
 };
 
-export const createOne = async (product) => {
+export const createOne = async (productData) => {
   const {
     title,
     description,
@@ -59,18 +34,19 @@ export const createOne = async (product) => {
     stock = 0,
     category,
     thumbnail,
-  } = req.body;
+  } = productData;
+
   if (!title || !description || !code || !price) {
-    res.status(400).json({ message: "All fields are required" });
+    throw new Error("All fields are required");
   } else if (!stock) {
-    delete req.body.stock;
+    delete productData.stock;
   } else {
     try {
-      const createdProduct = await productsManager.createOne(req.body);
-      res.status(200).json({ message: "Product created" });
+      const createdProduct = await productsManager.createOne(productData);
       return createdProduct;
     } catch (error) {
-      res.status(500).json({ message: "Internal Server Error" });
+      console.error(error.message);
+      throw new Error("Internal Server Error");
     }
   }
 };
@@ -116,18 +92,3 @@ export const deleteOne = async (id) => {
     res.status(500).json({ message: "Internal Server Error" });
   }
 };
-
-// export const findByCategory = async (category) => {
-//   const { category } = req.query;
-//   try {
-//     const products = await productsManager.findByCategory(category);
-//     if (!products.length) {
-//       res.status(200).json({ message: "No Products Found" });
-//     } else {
-//       res.status(200).json({ message: "Products found", products });
-//     }
-//     return products;
-//   } catch (error) {
-//     res.status(500).json({ error: error.message });
-//   }
-// };

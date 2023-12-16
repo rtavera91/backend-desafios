@@ -6,6 +6,7 @@ import { productsRouter } from "./router/products.router.js";
 import { cartRouter } from "./router/cart.router.js";
 import { usersRouter } from "./router/users.router.js";
 import { chatsRouter } from "./router/chats.router.js";
+import { ticketRouter } from "./router/ticket.router.js";
 import { __dirname } from "./utils.js";
 import { productsManager } from "../src/dao/managers/productManager.js";
 import config from "./config/config.js";
@@ -61,6 +62,7 @@ app.use("/api/carts", cartRouter);
 app.use("/api/users", usersRouter);
 app.use("/api/chat", chatsRouter);
 app.use("/api/sessions", sessionsRouter);
+app.use("/api/tickets", ticketRouter);
 
 // levantamos al servidor
 

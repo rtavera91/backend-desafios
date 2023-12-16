@@ -28,11 +28,13 @@ export const findCartById = async (req, res) => {
 };
 
 export const createCart = async (req, res) => {
-  const { productID } = req.body;
-  const createdCart = await createOne(...productID);
-  if (createdCart) {
+  try {
+    const { products } = req.body;
+
+    const createdCart = await createOne(...products);
     res.status(200).json({ message: "Cart created", cart: createdCart });
-  } else {
+  } catch (error) {
+    console.error(error.message);
     res.status(500).json({ message: "Internal Server Error" });
   }
 };

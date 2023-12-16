@@ -1,6 +1,10 @@
 import { Router } from "express";
 import { isUser } from "../middlewares/auth.middleware.js";
-//import { cartsManager } from "../dao/managers/cartManager.js";
+import { cartsManager } from "../dao/managers/cartManager.js";
+import { productsManager } from "../dao/managers/productManager.js";
+import { findProductById } from "../controllers/products.controller.js";
+import passport from "passport";
+import { generateUniqueID } from "../public/js/uniqueID.js";
 import {
   findCarts,
   findCartById,
@@ -23,14 +27,77 @@ const router = Router();
 // IMPLEMENTACIÓN DE ARQUITECTURA POR CAPAS
 router.get("/", findCarts);
 router.get("/:cid", findCartById);
-router.post("/", isUser, createCart);
+router.post(
+  "/",
+  //isUser,
+  createCart
+);
 router.put("/:cid/product/:pid", isUser, updateCart);
 router.delete("/:cid", isUser, deleteCart);
 router.delete("/:cid/product/:pid", isUser, deleteCartProduct);
 router.delete("/:cid/products", isUser, deleteCartProducts);
 
 // Lógica de Tickets
-router.post("/:cid/purchase", createTicket);
+router.post("/:cid/purchase", async (req, res) => {
+  try {
+    const cartId = req.params.cid;
+    const cart = await cartsManager.findById(cartId);
+
+    if (!cart) return res.status(404).json({ message: "Cart not found" });
+
+    let productsToBuy = cart.products;
+    let productsNotProcessed = [];
+    let ticketQuantity = 0;
+
+    for (let productToBuy of productsToBuy) {
+      let productID = productToBuy._id.toString();
+      let quantityToBuy = productToBuy.quantity;
+      ticketQuantity += quantityToBuy;
+
+      // //verificar stock del producto
+      // const product = await findProductById({ pid: productID });
+      // // console.log("product:", product);
+
+      // //   if (!product || product.stock < quantityToBuy) {
+      // //     productsNotProcessed.push(productID);
+      // //   } else {
+      // //     //actualizar stock del producto
+      // //     let newStock = product.stock - quantityToBuy;
+      // //     await productsManager.updateOne(productID, { stock: newStock });
+      // //     await product.save();
+
+      // //actualizamos el carrito del usuario con los productos que no se pudieron comprar
+      // if (productsNotProcessed.length > 0) {
+      //   const updatedProducts = cart.products.filter(
+      //     (product) => !productsNotProcessed.includes(product._id.toString())
+      //   );
+      //   await cartsManager.updateOne(cartId, {
+      //     products: updatedProducts,
+      //   });
+    }
+    //creamos una nueva compra por cada producto comprado
+    const ticketData = {
+      cart: cartId,
+      purchase_datetime: new Date(),
+      // purchaser: req.user.email,
+      quantity: ticketQuantity,
+      code: generateUniqueID(),
+    };
+    console.log("ticketData:", ticketData);
+
+    const createdTicket = await createTicket(ticketData);
+    console.log("createdTicket:", createdTicket);
+
+    //enviamos la respuesta al cliente
+    res.status(200).json({
+      message: "Purchase completed",
+      products_not_processed: productsNotProcessed,
+    });
+  } catch (error) {
+    console.error(error.message);
+    return res.status(500).json({ message: "Internal Server Error" });
+  }
+});
 
 //---------DE AQUI PARA ABAJO ES LO QUE TENÍAMOS HASTA LA CLASE PASADA DONDE EL MANAGER SE COMUNICABA CON EL DAO------------//
 

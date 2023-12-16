@@ -20,9 +20,23 @@ export const findById = async (id) => {
   }
 };
 
-export const createOne = async (...cart) => {
+export const createOne = async (
+  cart,
+  purchase_datetime,
+  quantity,
+  purchaser,
+  code
+) => {
   try {
-    const ticket = await ticketsManager.createOne(...cart);
+    const ticketData = {
+      cart,
+      purchase_datetime,
+      quantity,
+      purchaser,
+      code,
+    };
+
+    const ticket = await ticketsManager.createOne(ticketData);
     return ticket;
   } catch (error) {
     console.error(error.message);

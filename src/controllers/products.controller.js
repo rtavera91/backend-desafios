@@ -15,17 +15,24 @@ export const findProducts = async (req, res) => {
   }
 };
 
-export const findProductById = async (req, res) => {
-  const product = await findById();
-  if (product) {
-    res.status(200).json({ message: "Product found", product });
-  } else {
-    res.status(404).json({ message: "Product not found" });
+export const findProductById = async (paramsOrId) => {
+  const { pid } = paramsOrId.params || paramsOrId;
+
+  try {
+    const product = await findById(pid);
+
+    if (product.error === "Product Not Found") {
+      return null;
+    }
+
+    return product;
+  } catch (error) {
+    return null;
   }
 };
 
 export const createProduct = async (req, res) => {
-  const createdProduct = await createOne();
+  const createdProduct = await createOne(req.body);
   if (createdProduct) {
     res
       .status(200)
@@ -54,12 +61,3 @@ export const deleteProduct = async (req, res) => {
     res.status(404).json({ message: "Product not found" });
   }
 };
-
-// export const findProductsByCategory = async (req, res) => {
-//   const products = await findByCategory();
-//   if (!products.length) {
-//     res.status(200).json({ message: "No Products Found" });
-//   } else {
-//     res.status(200).json({ message: "Products found", products });
-//   }
-// };
