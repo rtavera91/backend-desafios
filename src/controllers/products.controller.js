@@ -1,3 +1,5 @@
+import { ErrorMessages } from "../errors/error.enum.js";
+import CustomError from "../errors/not_found.error.js";
 import {
   findAll,
   findById,
@@ -9,7 +11,9 @@ import {
 export const findProducts = async (req, res) => {
   const products = await findAll();
   if (!products.length) {
-    res.status(200).json({ message: "No Products Found" });
+    res
+      .status(200)
+      .json(CustomError.createError(ErrorMessages.PRODUCT_NOT_FOUND));
   } else {
     res.status(200).json({ message: "Products found", products });
   }
@@ -38,7 +42,9 @@ export const createProduct = async (req, res) => {
       .status(200)
       .json({ message: "Product created", product: createdProduct });
   } else {
-    res.status(500).json({ message: "Internal Server Error" });
+    res
+      .status(500)
+      .json(CustomError.createError(ErrorMessages.INTERNAL_SERVER_ERROR));
   }
 };
 
@@ -49,7 +55,9 @@ export const updateProduct = async (req, res) => {
       .status(200)
       .json({ message: "Product updated", product: updatedProduct });
   } else {
-    res.status(404).json({ message: "Product not found" });
+    res
+      .status(404)
+      .json(CustomError.createError(ErrorMessages.PRODUCT_NOT_FOUND));
   }
 };
 
@@ -58,6 +66,8 @@ export const deleteProduct = async (req, res) => {
   if (deletedProduct) {
     res.status(200).json({ message: "Product deleted" });
   } else {
-    res.status(404).json({ message: "Product not found" });
+    res
+      .status(404)
+      .json(CustomError.createError(ErrorMessages.PRODUCT_NOT_FOUND));
   }
 };

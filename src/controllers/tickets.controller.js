@@ -1,3 +1,5 @@
+import { ErrorMessages } from "../errors/error.enum.js";
+import CustomError from "../errors/not_found.error.js";
 import {
   findAll,
   findById,
@@ -11,7 +13,9 @@ export const findTickets = async (req, res) => {
   if (!tickets.length) {
     res.status(200).json({ message: "No Tickets Found" });
   } else {
-    res.status(200).json({ message: "Tickets found", tickets });
+    res
+      .status(200)
+      .json(CustomError.createError(ErrorMessages.TICKET_NOT_FOUND));
   }
 };
 
@@ -21,7 +25,9 @@ export const findTicketById = async (req, res) => {
   if (ticket) {
     res.status(200).json({ message: "Ticket found", ticket });
   } else {
-    res.status(404).json({ message: "Ticket not found" });
+    res
+      .status(404)
+      .json(CustomError.createError(ErrorMessages.TICKET_NOT_FOUND));
   }
 };
 
@@ -45,7 +51,7 @@ export const createTicket = async (paramsOrId) => {
     return { ticket: createdTicket };
   } catch (error) {
     console.error(error.message);
-    return { error: "Internal Server Error" };
+    return CustomError.createError(ErrorMessages.INTERNAL_SERVER_ERROR);
   }
 };
 
@@ -59,7 +65,9 @@ export const updateTicket = async (req, res) => {
         .status(200)
         .json({ message: "Ticket updated", ticket: updatedTicket });
     } else {
-      res.status(404).json({ message: "Ticket not found" });
+      res
+        .status(404)
+        .json(CustomError.createError(ErrorMessages.TICKET_NOT_FOUND));
     }
   } catch (error) {
     res.status(500).json({ error: error.message });
@@ -73,7 +81,9 @@ export const deleteTicket = async (req, res) => {
     if (result) {
       res.status(200).json({ message: "Ticket deleted" });
     } else {
-      res.status(404).json({ message: "Ticket not found" });
+      res
+        .status(404)
+        .json(CustomError.createError(ErrorMessages.TICKET_NOT_FOUND));
     }
   } catch (error) {
     res.status(500).json({ error: error.message });

@@ -1,3 +1,5 @@
+import { ErrorMessages } from "../errors/error.enum.js";
+import CustomError from "../errors/not_found.error.js";
 import { findAll, createOne } from "../services/messages.service.js";
 
 export const findMessages = async (req, res) => {
@@ -14,7 +16,9 @@ export const createMessage = async (req, res) => {
   try {
     const message = await createOne(req.body);
     if (!name || !email || !message) {
-      res.status(400).json({ message: "Missing fields" });
+      res
+        .status(400)
+        .json(CustomError.createError(ErrorMessages.MISSING_FIELDS));
     }
     res.status(201).json(message);
   } catch (error) {
