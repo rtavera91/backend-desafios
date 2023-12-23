@@ -19,6 +19,7 @@ import cookieParser from "cookie-parser";
 import sessionsRouter from "./router/sessions.router.js";
 import { errorMiddleware } from "./errors/error.middleware.js";
 import { ErrorMessages } from "./errors/error.enum.js";
+import { logger } from "./winston.js";
 
 //importar passport y la configuración de passport
 import "./passport.js";
@@ -65,6 +66,15 @@ app.use("/api/users", usersRouter);
 app.use("/api/chat", chatsRouter);
 app.use("/api/sessions", sessionsRouter);
 app.use("/api/tickets", ticketRouter);
+app.use("/loggerTest", (req, res) => {
+  logger.debug("Debug");
+  logger.http("Http");
+  logger.info("Info");
+  logger.warning("Warning");
+  logger.error("Error");
+  logger.fatal("Fatal");
+  res.send("Logs generados");
+});
 
 // error middleware
 app.use(errorMiddleware);
