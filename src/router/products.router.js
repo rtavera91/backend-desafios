@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { isAdmin } from "../middlewares/auth.middleware.js";
+import { isAdmin, isAdminOrPremium } from "../middlewares/auth.middleware.js";
 import { generateProducts } from "../faker.js";
 //import { productsManager } from "../dao/managers/productManager.js";
 import {
@@ -17,7 +17,7 @@ router.get("/", (req, res) => {
 
 router.get("/products", findProducts);
 router.get("/products/:pid", findProductById);
-router.post("/products", isAdmin, createProduct);
+router.post("/products", isAdminOrPremium, createProduct);
 router.put("/products/:pid", isAdmin, updateProduct);
 router.delete("/products/:pid", isAdmin, deleteProduct);
 

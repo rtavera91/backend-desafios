@@ -85,6 +85,19 @@ class CartsManager {
       return { error: "Cart not found" };
     }
   }
+
+  async findProductInCart(cid, pid) {
+    const cart = await cartsModel.findById(cid);
+    const product = await cartsModel.findById(pid);
+    if (cart && product) {
+      const productInCart = cart.products.find(
+        (item) => item.product.toString() === pid
+      );
+      return productInCart;
+    } else {
+      return { error: "Cart or Product not found" };
+    }
+  }
 }
 
 export const cartsManager = new CartsManager();

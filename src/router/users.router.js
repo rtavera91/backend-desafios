@@ -8,6 +8,7 @@ import {
   updateUser,
   deleteUser,
   loginUser,
+  updateUserRole,
 } from "../controllers/users.controller.js";
 import passport from "passport";
 import config from "../config/config.js";
@@ -46,6 +47,7 @@ router.post("/", createUser);
 router.put("/:uid", updateUser);
 router.delete("/:uid", deleteUser);
 router.post("/login", loginUser);
+router.put("/premium/:uid", updateUserRole); // actualiza el rol del usuario
 
 // router.get("/", async (req, res) => {
 //   try {

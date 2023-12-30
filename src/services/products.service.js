@@ -36,13 +36,18 @@ export const createOne = async (productData) => {
     thumbnail,
   } = productData;
 
+  const owner = req.user.email;
+
   if (!title || !description || !code || !price) {
     throw new Error("All fields are required");
   } else if (!stock) {
     delete productData.stock;
   } else {
     try {
-      const createdProduct = await productsManager.createOne(productData);
+      const createdProduct = await productsManager.createOne(
+        ...productData,
+        owner
+      );
       return createdProduct;
     } catch (error) {
       console.error(error.message);
@@ -63,6 +68,15 @@ export const updateOne = async (id, product) => {
     category,
     thumbnail,
   } = req.body;
+
+  const owner = req.user.email;
+  const role = req.user.role;
+
+  // Si no es admin y no es el propietario, devuelve un error de Unauthorized
+  if (role !== "admin" && product.owner !== owner) {
+    return res.status(401).json({ message: "Unauthorized" });
+  }
+
   try {
     const updatedProduct = await productsManager.updateOne(
       pid,
@@ -75,8 +89,8 @@ export const updateOne = async (id, product) => {
       category,
       thumbnail
     );
+
     res.status(200).json({ message: "Product updated" });
-    return updatedProduct;
   } catch (error) {
     res.status(500).json({ message: "Internal Server Error" });
   }
@@ -84,6 +98,14 @@ export const updateOne = async (id, product) => {
 
 export const deleteOne = async (id) => {
   const { pid } = req.params;
+  const owner = req.user.email;
+  const role = req.user.role;
+
+  // Si no es admin y no es el propietario, devuelve un error de Unauthorized
+  if (role !== "admin" && product.owner !== owner) {
+    return res.status(401).json({ message: "Unauthorized" });
+  }
+
   try {
     const deletedProduct = await productsManager.deleteOne(pid);
     res.status(200).json({ message: "Product deleted" });

@@ -49,7 +49,9 @@ export const createProduct = async (req, res) => {
 };
 
 export const updateProduct = async (req, res) => {
-  const updatedProduct = await updateOne();
+  const { id, product } = req.params;
+  const updatedProduct = await updateOne(id, product, req.user);
+
   if (updatedProduct) {
     res
       .status(200)
@@ -62,7 +64,8 @@ export const updateProduct = async (req, res) => {
 };
 
 export const deleteProduct = async (req, res) => {
-  const deletedProduct = await deleteOne();
+  const { id } = req.params;
+  const deletedProduct = await deleteOne(id, req.user);
   if (deletedProduct) {
     res.status(200).json({ message: "Product deleted" });
   } else {

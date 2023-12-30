@@ -22,6 +22,24 @@ export const findById = async (id) => {
 };
 
 export const createOne = async (...products) => {
+  // Si el usuario no está logueado, no puede crear un carrito
+  if (!req.user) {
+    return { error: "You must be logged in to create a cart" };
+  }
+
+  // Si el usuario logueado es premium, verifica que sea el propietario de todos los productos
+  if (req.user.role === "premium") {
+    for (const product of products) {
+      const foundProduct = await productsManager.findById(product.id);
+
+      if (!foundProduct || foundProduct.owner !== req.user.email) {
+        return {
+          error: "You must be the owner of all products to create a cart",
+        };
+      }
+    }
+  }
+
   try {
     const cart = await cartsManager.createOne(...products);
     return cart;
@@ -32,7 +50,26 @@ export const createOne = async (...products) => {
 };
 
 export const updateOne = async (cid, pid, quantity) => {
+  // Si el usuario no está logueado, no puede actualizar el carrito
+  if (!req.user) {
+    return { error: "You must be logged in to update a cart" };
+  }
+
   try {
+    // Obtener información del producto antes de la actualización
+    const existingProduct = await cartsManager.findProductInCart(cid, pid);
+
+    // Si el usuario es premium, verificar que sea el propietario del producto
+    if (
+      req.user.role === "premium" &&
+      existingProduct.owner !== req.user.email
+    ) {
+      return {
+        error: "You must be the owner of the product to update the cart",
+      };
+    }
+
+    // Actualizar el carrito
     const cart = await cartsManager.updateOne(cid, pid, quantity);
     return cart;
   } catch (error) {

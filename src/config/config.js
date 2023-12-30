@@ -12,4 +12,7 @@ export default {
   admin_email: process.env.ADMIN_EMAIL,
   admin_password: process.env.ADMIN_PASSWORD,
   environment: process.env.NODE_ENV,
+  gmail_user: process.env.GMAIL_USER,
+  gmail_password: process.env.GMAIL_PASSWORD,
+  client_url: `${process.env.CLIENT_URL + process.env.CLIENT_PORT}`,
 };

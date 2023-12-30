@@ -34,7 +34,7 @@ export const createCart = async (req, res) => {
   try {
     const { products } = req.body;
 
-    const createdCart = await createOne(...products);
+    const createdCart = await createOne(...products, req.user);
     res.status(200).json({ message: "Cart created", cart: createdCart });
   } catch (error) {
     console.error(error.message);
@@ -48,7 +48,7 @@ export const updateCart = async (req, res) => {
   const { cid, pid } = req.params;
   const quantity = parseInt(req.body.quantity, 10);
   try {
-    const updatedCart = await updateOne(cid, pid, quantity);
+    const updatedCart = await updateOne(cid, pid, quantity, req.user);
     if (updatedCart) {
       res
         .status(200)

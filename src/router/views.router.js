@@ -13,6 +13,14 @@ router.get("/signup", (req, res) => {
   res.render("signup");
 });
 
+router.get("/forgotpassword", (req, res) => {
+  res.render("forgotPassword");
+});
+
+router.get("/resetpassword/:token", (req, res) => {
+  res.render("resetPassword");
+});
+
 // error
 router.get("/error", (req, res) => {
   res.render("error");

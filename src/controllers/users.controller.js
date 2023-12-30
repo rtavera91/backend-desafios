@@ -92,3 +92,19 @@ export const loginUser = async (req, res) => {
     res.status(500).json({ error: "Error", error });
   }
 };
+
+export const updateUserRole = async (req, res) => {
+  const { uid } = req.params;
+  const { role } = req.body;
+  if (!role) {
+    return res
+      .status(400)
+      .json(CustomError.createError(ErrorMessages.MISSING_FIELDS));
+  }
+  const updatedUser = await updateOne(uid, role);
+  if (updatedUser) {
+    res.status(200).json({ message: "User updated", user: updatedUser });
+  } else {
+    res.status(404).json(CustomError.createError(ErrorMessages.NO_USERS_FOUND));
+  }
+};
