@@ -14,5 +14,5 @@ export default {
   environment: process.env.NODE_ENV,
   gmail_user: process.env.GMAIL_USER,
   gmail_password: process.env.GMAIL_PASSWORD,
-  client_url: `${process.env.CLIENT_URL + process.env.CLIENT_PORT}`,
+  client_url: `${process.env.CLIENT_URL + process.env.PORT}`,
 };

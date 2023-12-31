@@ -1,6 +1,5 @@
 import { Router } from "express";
 import passport from "passport";
-import transporter from "../nodemailer.js";
 import { usersManager } from "../dao/managers/usersManager.js";
 import { findUserById } from "../controllers/users.controller.js";
 import { generateToken, compareData, hashData } from "../utils.js";
@@ -8,7 +7,17 @@ import { isUser } from "../middlewares/auth.middleware.js";
 import UserDTO from "../dao/DTOs/userDTO.js";
 import config from "../config/config.js";
 import { jwtValidation } from "../middlewares/jwt.middleware.js";
+import nodemailer from "nodemailer";
 const router = Router();
+
+//no me importaba el transporter, de momento lo estoy configurando acá mismo pero debería ir en un archivo de configuración de nodemailer
+const transporter = nodemailer.createTransport({
+  service: "gmail",
+  auth: {
+    user: config.gmail_user,
+    pass: config.gmail_password,
+  },
+});
 
 router.post("/login", async (req, res, next) => {
   const { email, password } = req.body;
